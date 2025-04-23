@@ -8,23 +8,30 @@
 import UIKit
 
 class TodoTableViewController: UITableViewController {
-    var tasks : [Task] = []
 
     // MARK: - Table view data source
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    
+    override func viewDidLoad() {
+            super.viewDidLoad()
+    }
         
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return tasks.count
+        return TaskDataManager.shared.activeTasks.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
-        let selectedTask = tasks[indexPath.row]
+        let selectedTask = TaskDataManager.shared.activeTasks[indexPath.row]
         
         if selectedTask.priority == 1 {
             cell.textLabel?.text = "❗️" + selectedTask.name
@@ -39,16 +46,28 @@ class TodoTableViewController: UITableViewController {
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            tasks.remove(at: indexPath.row)
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let doneAction = UIContextualAction(style: .normal, title: "Done") { [weak self] action, view, completionHandler in
+            guard let _ = self else { return }
+
+            let completedTask = TaskDataManager.shared.activeTasks.remove(at: indexPath.row)
+            TaskDataManager.shared.completedTasks.append(completedTask)
             tableView.deleteRows(at: [indexPath], with: .automatic)
+            completionHandler(true)
         }
+        doneAction.backgroundColor = .systemBlue
+            
+        return UISwipeActionsConfiguration(actions: [doneAction])
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let addTodoViewController = segue.destination as? AddTodoViewController {
-            addTodoViewController.toDoTableViewController = self
+        if segue.identifier == "showAddTodo" {
+            if let _ = segue.destination as? AddTodoViewController {
+            }
+        }
+        else if segue.identifier == "showHistory" {
+            if let _ = segue.destination as? HistoryViewController {
+            }
         }
     }
 }

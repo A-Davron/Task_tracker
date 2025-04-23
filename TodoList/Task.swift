@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Task {
+class Task: Codable {
     var name = ""
     var priority = 0
 }
