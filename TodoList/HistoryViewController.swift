@@ -32,7 +32,7 @@ class HistoryViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            TaskDataManager.shared.completedTasks.remove(at: indexPath.row)
+            TaskDataManager.shared.deleteCompletedTask(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
             tableView.reloadData()
         }

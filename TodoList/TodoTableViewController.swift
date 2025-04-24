@@ -50,8 +50,7 @@ class TodoTableViewController: UITableViewController {
         let doneAction = UIContextualAction(style: .normal, title: "Done") { [weak self] action, view, completionHandler in
             guard let _ = self else { return }
 
-            let completedTask = TaskDataManager.shared.activeTasks.remove(at: indexPath.row)
-            TaskDataManager.shared.completedTasks.append(completedTask)
+            TaskDataManager.shared.completeTask(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
             completionHandler(true)
         }
